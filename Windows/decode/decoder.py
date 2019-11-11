@@ -23,21 +23,38 @@ f_num =str(f_num)
 
 cmd = "python ./lib/6_RSdecode.py "+input_file+"/encode_file_cod ./decode/decode_file_cod "+f_num
 os.system(cmd)
-cmd = "python ./lib/7_filter_decode.py ./decode/decode_file_cod "+f_num
+
+for file in os.listdir("./decode/"):
+	path="./decode/"+file
+	sz = os.path.getsize(path)
+	if sz == 0:
+		os.remove(path)
+		#print(path)
+
+file_i=0
+for file in os.listdir("./decode/"):
+	file_i=str(file_i)
+	file_name = "./temp/decode_file_cod"+file_i
+	file = "./decode/" + file
+	os.rename(file, file_name)
+	file_i=int(file_i)
+	file_i=file_i+1
+
+cmd = "python ./lib/7_filter_decode.py ./temp/decode_file_cod "+f_num
 os.system(cmd)
 #以下不使用
 #cmd = "python ./lib/8_check_encode.py ./decode/encode_file_cod "+f_num
 #os.system(cmd)
 
 
-shutil.copy("./encode/encode_file_meta.txt", "./decode/decode_file_meta.txt")
+shutil.copy("./encode/encode_file_meta.txt", "./temp/decode_file_meta.txt")
 
-s = './decode/decode_file_meta.txt'
+s = './temp/decode_file_meta.txt'
 f1 = open(s, 'r')
 old_lst = f1.readline()
 #print(old_lst)
 ls = old_lst.split(" ", 1)
-lss="./decode/decode_file "+ls[1]
+lss="./temp/decode_file "+ls[1]
 print(ls)
 f1.close()
 f2 = open(s, 'w')
@@ -45,8 +62,9 @@ f2.write(lss)
 f2.close()
 
 
-cmd = "F:\CODE\decode\lib/repair.exe ./decode/decode_file"
+cmd = "F:\CODE\decode\lib/repair.exe ./temp/decode_file"
 os.system(cmd)
-cmd = "F:\CODE\decode\lib/decode.exe ./decode/decode_file"
-os.system(cmd)
+#cmd = "F:\CODE\decode\lib/decode.exe ./temp/decode_file"
+#os.system(cmd)
 #shutil.copy("./decode/decode_file", out_file)
+
